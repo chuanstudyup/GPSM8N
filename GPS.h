@@ -18,7 +18,7 @@ class GPS
 public:
 	GPS();
 	~GPS();
-	void read(string);
+	void parseNAME(string);
 	
 	double lat, lon;
 	float velocity, course, altitude;
@@ -29,8 +29,6 @@ private:
 	const string header = "$GN";  
 	const string footer = "\r\n";
 	string payload;
-
-	vector<string> strs;
 
     bool parse(string str, int &parseLen);
 	bool checkCRC();

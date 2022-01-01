@@ -38,20 +38,27 @@ GPS::~GPS()
 bool GPS::checkCRC()  //CRC校验
 {
 	int pos = payload.find('*');
-	unsigned char checkSum = 0;
-	unsigned char CRC = (hexToDec(payload[pos + 1]) << 4) + hexToDec(payload[pos + 2]);
-	for (int i = 1; i < pos; i++)
-		checkSum ^= payload[i];
-	if (checkSum == CRC)
-		return true;
+	if(pos != -1)
+	{
+		unsigned char checkSum = 0;
+		unsigned char CRC = (hexToDec(payload[pos + 1]) << 4) + hexToDec(payload[pos + 2]);
+		for (int i = 1; i < pos; i++)
+			checkSum ^= payload[i];
+		if (checkSum == CRC)
+			return true;
+		else
+			return false;
+	}
 	else
 		return false;
 }
 
-void GPS::read(string parseStr)
+void GPS::parseNAME(string parseStr)
 {
 	int parseLength = 1;
-	while (parseStr.length() > parseLength)
+	int len = static_cast<int>(parseStr.length());
+	
+	while (len > parseLength)
 	{
 		string str = parseStr.substr(parseLength - 1);
 #ifdef GPSDEBUG
@@ -61,8 +68,7 @@ void GPS::read(string parseStr)
 		{
 			if (checkCRC()) //进行CRC校验，校验该条NMEA消息数据是否准确。
 			{
-				strs.clear();
-				strs = testSplit(payload, ",");
+				vector<string> strs = testSplit(payload, ",");
 #ifdef GPSDEBUG
 				cout << "goodCRC" << "  "<< strs.size() << endl;
 #endif // GPSDEBUG

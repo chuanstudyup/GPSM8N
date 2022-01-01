@@ -24,10 +24,10 @@ int main()
 	char buf3[200] = ",10,1.00,49.7,M,-10.6,M,,*5B\r\n";
 	
 	GPS gps;
-	gps.read(buf0);
-	gps.read(buf1);
-	gps.read(buf2);
-	gps.read(buf3);
+	gps.parseNAME(buf0);
+	gps.parseNAME(buf1);
+	gps.parseNAME(buf2);
+	gps.parseNAME(buf3);
 
 	cout <<"Lat:"<< gps.lat << endl;
 	cout <<"Lng:"<< gps.lon << endl;
