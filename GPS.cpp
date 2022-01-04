@@ -7,7 +7,7 @@ vector<string> testSplit(string srcStr, const string& delim)
 	int nPos = 0;
 	vector<string> vec;
 	nPos = srcStr.find(delim.c_str());
-	while (-1 != nPos)
+	while (nPos != string::npos)
 	{
 		string temp = srcStr.substr(0, nPos);
 		vec.push_back(temp);
@@ -38,7 +38,7 @@ GPS::~GPS()
 bool GPS::checkCRC()  //CRCÐ£Ñé
 {
 	int pos = payload.find('*');
-	if(pos != -1)
+	if(pos != string::npos)
 	{
 		unsigned char checkSum = 0;
 		unsigned char CRC = (hexToDec(payload[pos + 1]) << 4) + hexToDec(payload[pos + 2]);
@@ -79,9 +79,11 @@ void GPS::parseNAME(string parseStr)
 				cout << "gotGNRMC" << endl;
 #endif // GPSDEBUG
 					int pos = strs[3].find('.');
-					lat = atof(strs[3].substr(0, 2).c_str()) + atof(strs[3].substr(pos - 2).c_str()) / 60;
+					if(pos != string::npos)
+						lat = atof(strs[3].substr(0, 2).c_str()) + atof(strs[3].substr(pos - 2).c_str()) / 60;
 					pos = strs[5].find('.');
-					lon = atof(strs[5].substr(0, 3).c_str()) + atof(strs[5].substr(pos - 2).c_str()) / 60;
+					if(pos != string::npos)
+						lon = atof(strs[5].substr(0, 3).c_str()) + atof(strs[5].substr(pos - 2).c_str()) / 60;
 					velocity = atof(strs[7].c_str());
 					course = atof(strs[8].c_str());	
 				}
@@ -91,9 +93,11 @@ void GPS::parseNAME(string parseStr)
 					cout << "gotGNGGA" << endl;
 #endif // GPSDEBUG
 					int pos = strs[2].find('.');
-					lat = atof(strs[2].substr(0, 2).c_str()) + atof(strs[2].substr(pos - 2).c_str()) / 60;
+					if(pos != string::npos)
+						lat = atof(strs[2].substr(0, 2).c_str()) + atof(strs[2].substr(pos - 2).c_str()) / 60;
 					pos = strs[4].find('.');
-					lon = atof(strs[4].substr(0, 3).c_str()) + atof(strs[4].substr(pos - 2).c_str()) / 60;
+					if(pos != string::npos)
+						lon = atof(strs[4].substr(0, 3).c_str()) + atof(strs[4].substr(pos - 2).c_str()) / 60;
 					SVs = atoi(strs[7].c_str());
 					HDOP = atof(strs[8].c_str());
 					altitude = atof(strs[9].c_str());
@@ -112,7 +116,7 @@ bool GPS::parse(string str, int &parseLen)
 	if (get_header)
 	{
 		int pos_footer = str.find(footer);
-		if (pos_footer != -1)
+		if (pos_footer != string::npos)
 		{
 #ifdef GPSDEBUG
 			cout << "gotFooter" << endl;
@@ -137,7 +141,7 @@ bool GPS::parse(string str, int &parseLen)
 	else
 	{
 		int pos_header = str.find(header);
-		if (pos_header != -1)
+		if (pos_header != string::npos)
 		{
 #ifdef GPSDEBUG
 			cout << "gotHeader" << endl;
@@ -145,7 +149,7 @@ bool GPS::parse(string str, int &parseLen)
 			payload.clear();
 			get_header = true;
 			int pos_footer = str.find(footer, pos_header);
-			if (pos_footer != -1)
+			if (pos_footer != string::npos)
 			{
 #ifdef GPSDEBUG
 				cout << "gotFooter" << endl;
