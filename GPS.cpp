@@ -78,6 +78,10 @@ void GPS::parseNAME(string parseStr)
 #ifdef GPSDEBUG
 				cout << "gotGNRMC" << endl;
 #endif // GPSDEBUG
+					if(strcmp(strs[2].c_str(),"A") == 0)
+						valid = true;
+					else
+						valid = false;
 					int pos = strs[3].find('.');
 					if(pos != string::npos)
 						lat = atof(strs[3].substr(0, 2).c_str()) + atof(strs[3].substr(pos - 2).c_str()) / 60;

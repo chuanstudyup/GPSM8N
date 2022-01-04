@@ -20,6 +20,7 @@ public:
 	~GPS();
 	void parseNAME(string);
 	
+	bool valid;
 	double lat, lon;
 	float velocity, course, altitude;
 	uint8_t SVs;
