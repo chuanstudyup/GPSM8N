@@ -7,3 +7,6 @@ State: [lat(rad),lon(rad),velocity(m/s),chi(rad),r(rad)];
 Measurement: [lat_GNSS(rad),lon_GNSS(rad),vel_GNSS(m/s),r_IMU(rad/s)];
 
 Reference: Five-state extended kalman filter for estimation of speed over ground (SOG), course over ground (COG), and course rate of unmanned surface vehicles (USVs): Experimental results(DOI: 10.3390/s21237910)
+
+# Modify the bug of EKF
+Modify the bug of EKF, the index is out of range, and it is caused by directly copying matlab code.

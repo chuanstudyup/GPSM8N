@@ -140,28 +140,29 @@ void GPS::gnssEKF(double r)
 	double Rn = a/sqrt(midValue);
 	double Rm = Rn*(1-ee)/midValue;
 	
-	Vector5d f(x_hat(3)*cos(x_hat(4))/Rm,
-			   x_hat(3)*sin(x_hat(4))/Rn/cos(x_hat(1)),
-			   -alpha_1*x_hat(3),
-			   x_hat(3),
-			   -alpha_2*x_hat(5));
-	Matrix5d Acom{{0,0,cos(x_hat(4))/Rm,-x_hat(3)*sin(x_hat(4))/Rm,0},
-				  {x_hat(3)*sin(x_hat(4))*tan(x_hat(1))/Rn/cos(x_hat(1)),0,sin(x_hat(4))/Rn/cos(x_hat(1)),x_hat(3)*cos(x_hat(4))/Rn/cos(x_hat(1)),0},
+	Vector5d f(x_hat(2)*cos(x_hat(3))/Rm,
+			   x_hat(2)*sin(x_hat(3))/Rn/cos(x_hat(0)),
+			   -alpha_1*x_hat(2),
+			   x_hat(4),
+			   -alpha_2*x_hat(4));
+	Matrix5d Acom{{0,0,cos(x_hat(3))/Rm,-x_hat(2)*sin(x_hat(3))/Rm,0},
+				  {x_hat(2)*sin(x_hat(3))*tan(x_hat(0))/Rn/cos(x_hat(0)),0,sin(x_hat(3))/Rn/cos(x_hat(0)),x_hat(2)*cos(x_hat(3))/Rn/cos(x_hat(0)),0},
 				  {0,0,-alpha_1,0,0},
 				  {0,0,0,0,1},
 				  {0,0,0,0,-alpha_2}};
 	
 	Matrix5d A = Matrix5d::Identity()+deltaT*Acom;
 	Vector5d x_prd = x_hat+ deltaT * f;
-	x_prd(4) = satCourse(x_prd(4));
+	x_prd(3) = satCourse(x_prd(3));
 	
+	E = deltaT*E;
 	Matrix5d p_prd = A*P_hat*A.transpose()+E*Q*E.transpose();
 	
 	Vector4d y(lat/d2r,lon/d2r,velocity,r/d2r);
 	Matrix<double,5,4> K = p_prd*C.transpose()*((C*p_prd*C.transpose()+R).inverse());
 	P_hat = (Matrix5d::Identity()-K*C)*p_prd;
 	x_hat = x_prd+K*(y-C*x_prd);
-	x_hat(4) = satCourse(x_hat(4));
+	x_hat(3) = satCourse(x_hat(3));
 	
 	oldTime = newTime;
 }
