@@ -29,8 +29,10 @@ public:
 	void initEKF(double yaw);
 	
 	bool valid;
-	double lat, lon;
-	float velocity, course, altitude;
+	double lat, lon;  //deg
+	float velocity;  //knot
+	float course;  //deg
+	float altitude;  //m
 	uint8_t SVs;
 	float HDOP;
 	

@@ -89,7 +89,7 @@ void GPS::parseNAME(string parseStr)
 					pos = strs[5].find('.');
 					if(pos != string::npos)
 						lon = atof(strs[5].substr(0, 3).c_str()) + atof(strs[5].substr(pos - 2).c_str()) / 60;
-					velocity = atof(strs[7].c_str())*0.5144;
+					velocity = atof(strs[7].c_str());
 					course = atof(strs[8].c_str());
 				}
 				else if (strs[0] == "$GNGGA")
@@ -136,7 +136,7 @@ void GPS::gnssEKF(double r)
 	newTime = micros();
 	deltaT = (newTime-oldTime)*0.001*0.001;
 	
-	double midValue = 1-ee*sin(x_hat(2))*sin(x_hat(2));
+	double midValue = 1-ee*sin(x_hat(0))*sin(x_hat(0));
 	double Rn = a/sqrt(midValue);
 	double Rm = Rn*(1-ee)/midValue;
 	
@@ -155,10 +155,10 @@ void GPS::gnssEKF(double r)
 	Vector5d x_prd = x_hat+ deltaT * f;
 	x_prd(3) = satCourse(x_prd(3));
 	
-	E = deltaT*E;
-	Matrix5d p_prd = A*P_hat*A.transpose()+E*Q*E.transpose();
+	Matrix<double,5,2> TE = deltaT*E;
+	Matrix5d p_prd = A*P_hat*A.transpose()+TE*Q*TE.transpose();
 	
-	Vector4d y(lat/d2r,lon/d2r,velocity,r/d2r);
+	Vector4d y(lat/d2r,lon/d2r,velocity*0.5144,r/d2r);
 	Matrix<double,5,4> K = p_prd*C.transpose()*((C*p_prd*C.transpose()+R).inverse());
 	P_hat = (Matrix5d::Identity()-K*C)*p_prd;
 	x_hat = x_prd+K*(y-C*x_prd);
